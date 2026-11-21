@@ -17,3 +17,7 @@ export const PROTECTED_USER_FIELDS = [
   "subscriptionPlan",
   "subscriptionExpiresAt",
 ] as const;
+
+export type SignupRole = (typeof SIGNUP_ROLES)[number];
+
+export const dashboardPathFor = (role: Role) => `/dashboard/${role}`;

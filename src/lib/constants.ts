@@ -21,3 +21,23 @@ export const PROTECTED_USER_FIELDS = [
 export type SignupRole = (typeof SIGNUP_ROLES)[number];
 
 export const dashboardPathFor = (role: Role) => `/dashboard/${role}`;
+
+export const MENU_CATEGORIES = [
+  { value: "classic", label: "Classic Pizzas" },
+  { value: "vegetarian", label: "Vegetarian Pizzas" },
+  { value: "meat-lovers", label: "Meat Lovers" },
+  { value: "specialty", label: "Specialty / Gourmet Pizzas" },
+  { value: "sides", label: "Sides & Appetizers" },
+  { value: "beverages-desserts", label: "Beverages & Desserts" },
+] as const;
+
+export type MenuCategory = (typeof MENU_CATEGORIES)[number]["value"];
+export const CATEGORY_VALUES = MENU_CATEGORIES.map((c) => c.value) as [MenuCategory, ...MenuCategory[]];
+export const categoryLabel = (value: string) => MENU_CATEGORIES.find((c) => c.value === value)?.label ?? value;
+
+export const CURRENCY_SYMBOL = "$";
+export const formatPrice = (amount: number) => `${CURRENCY_SYMBOL}${amount.toFixed(2)}`;
+
+export const FREE_PLAN_ITEM_LIMIT = 3;
+export const MAX_IMAGES = 4;
+export const MAX_IMAGE_MB = 2;

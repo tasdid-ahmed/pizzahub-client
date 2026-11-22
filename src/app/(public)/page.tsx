@@ -1,14 +1,43 @@
 import Link from "next/link";
+import { EmptyState } from "@/components/shared/empty-state";
+import { Reveal } from "@/components/shared/reveal";
+import { SectionHeading } from "@/components/shared/section-heading";
 import { Button } from "@/components/ui/button";
+import { Categories } from "@/features/home/categories";
+import { Hero } from "@/features/home/hero";
+import { HowItWorks } from "@/features/home/how-it-works";
+import { WhyChoose } from "@/features/home/why-choose";
+import { MenuCard } from "@/features/menu/menu-card";
+import { getFeaturedItems } from "@/lib/public-api";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const featured = await getFeaturedItems(6);
+
   return (
-    <section className="gingham px-4 py-24 text-center">
-      <h1 className="mx-auto max-w-2xl text-5xl font-black">Hot &amp; Fresh Pizza Delivered to Your Door</h1>
-      <p className="mx-auto mt-4 max-w-xl text-muted-foreground">The full home page arrives in Phase 3.</p>
-      <Button asChild size="lg" className="mt-8">
-        <Link href="/sign-up">Get started</Link>
-      </Button>
-    </section>
+    <>
+      <Hero />
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <Reveal>
+          <SectionHeading eyebrow="Fresh picks" title="Featured Menu Items" description="Hand-picked favourites from our restaurants, Premium partners first." />
+          {featured.length > 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((item) => (
+                <MenuCard key={item.id} item={item} />
+              ))}
+            </div>
+          ) : (
+            <EmptyState title="Our menu is warming up" description="No items are available right now. Please check back soon." />
+          )}
+          <div className="mt-10 text-center">
+            <Button asChild variant="outline" size="lg">
+              <Link href="/menu">View full menu</Link>
+            </Button>
+          </div>
+        </Reveal>
+      </section>
+      <Categories />
+      <WhyChoose />
+      <HowItWorks />
+    </>
   );
 }

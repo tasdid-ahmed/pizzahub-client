@@ -1,24 +1,46 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, type Db } from "mongodb";
 import { attachDatabasePool } from "@vercel/functions";
 
 const uri = process.env.MONGODB_URI;
 if (!uri) throw new Error("MONGODB_URI is not set");
 const mongoUri: string = uri;
+const dbName = process.env.MONGODB_DB;
 
-const globalForMongo = globalThis as unknown as { _pizzahubMongo?: MongoClient };
+type MongoState = { client: MongoClient; stale: boolean };
+const globalForMongo = globalThis as unknown as { _pizzahubMongo?: MongoState };
 
-function createClient() {
+function createState(): MongoState {
   const client = new MongoClient(mongoUri, {
     maxPoolSize: 10,
-    serverSelectionTimeoutMS: 8000,
-    connectTimeoutMS: 8000,
+    serverSelectionTimeoutMS: 6000,
+    connectTimeoutMS: 6000,
+    family: 4, // force IPv4, avoids slow dual-stack lookups in serverless
   });
-  // Closes idle connections before Vercel suspends the instance, so they never go stale.
+  const state: MongoState = { client, stale: false };
   attachDatabasePool(client);
-  return client;
+  // A closed topology never recovers by itself. Mark it so the next access builds a fresh client.
+  client.on("topologyClosed", () => {
+    state.stale = true;
+  });
+  return state;
 }
 
-const client = globalForMongo._pizzahubMongo ?? createClient();
-if (process.env.NODE_ENV !== "production") globalForMongo._pizzahubMongo = client;
+function currentDb(): Db {
+  let state = globalForMongo._pizzahubMongo;
+  if (!state || state.stale) {
+    const previous = state;
+    state = createState();
+    globalForMongo._pizzahubMongo = state;
+    void previous?.client.close().catch(() => undefined);
+  }
+  return state.client.db(dbName);
+}
 
-export const db = client.db(process.env.MONGODB_DB);
+/** Always resolves to a healthy client, so Better Auth never keeps a dead one. */
+export const db = new Proxy({} as Db, {
+  get(_target, property) {
+    const real = currentDb();
+    const value = Reflect.get(real, property, real);
+    return typeof value === "function" ? value.bind(real) : value;
+  },
+});

@@ -14,9 +14,14 @@ export type CurrentUser = {
   isBlocked: boolean;
 };
 
+async function readSession() {
+  return auth.api.getSession({ headers: await headers() });
+}
+
 /** Read once per request (React cache), straight from Better Auth + the database. */
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
-  const session = await auth.api.getSession({ headers: await headers() });
+  // One retry: the database layer rebuilds a dead client between the two attempts.
+  const session = await readSession().catch(() => readSession());
   if (!session) return null;
 
   const user = session.user as typeof session.user & {

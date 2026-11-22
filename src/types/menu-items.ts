@@ -24,3 +24,23 @@ export interface MenuItemInput {
   location: string;
   images: string[];
 }
+
+export interface PublicMenuItem {
+  id: string;
+  itemName: string;
+  category: MenuCategory;
+  description: string;
+  price: number;
+  location: string;
+  images: string[];
+  status: ItemStatus;
+  createdAt: string;
+  vendor: { id: string; name: string; image: string | null; isPremium: boolean };
+}
+
+export interface PageMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}

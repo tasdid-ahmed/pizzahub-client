@@ -17,7 +17,7 @@ export function Hero() {
       className="relative isolate overflow-hidden border-b-2 border-[color:var(--hard)] bg-[#fff1d6] bg-cover bg-right text-[#2b1b14]"
       style={{
         backgroundImage:
-          "linear-gradient(90deg, rgba(255,241,214,0.97) 0%, rgba(255,241,214,0.75) 45%, rgba(255,241,214,0) 80%), url('/pizzahub-hero.jpg')",
+          "linear-gradient(90deg, rgba(255,241,214,0.97) 0%, rgba(255,241,214,0.75) 45%, rgba(255,241,214,0) 80%), url('/pizzahub-hero.png')",
       }}
     >
       <div className="mx-auto flex min-h-[28rem] max-w-7xl flex-col justify-center px-4 py-20 sm:px-6 lg:min-h-[34rem]">

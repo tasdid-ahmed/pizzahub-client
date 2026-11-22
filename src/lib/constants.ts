@@ -35,7 +35,7 @@ export type MenuCategory = (typeof MENU_CATEGORIES)[number]["value"];
 export const CATEGORY_VALUES = MENU_CATEGORIES.map((c) => c.value) as [MenuCategory, ...MenuCategory[]];
 export const categoryLabel = (value: string) => MENU_CATEGORIES.find((c) => c.value === value)?.label ?? value;
 
-export const CURRENCY_SYMBOL = "$";
+export const CURRENCY_SYMBOL = "৳";
 export const formatPrice = (amount: number) => `${CURRENCY_SYMBOL}${amount.toFixed(2)}`;
 
 export const FREE_PLAN_ITEM_LIMIT = 3;

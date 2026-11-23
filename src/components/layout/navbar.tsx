@@ -19,6 +19,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { ROLES, dashboardPathFor, type Role } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 
 export type NavUser = { name: string; email: string; image: string | null; role: Role };
 
@@ -83,6 +84,7 @@ export function Navbar({ initialUser }: { initialUser: NavUser | null }) {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle />
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -127,52 +129,52 @@ export function Navbar({ initialUser }: { initialUser: NavUser | null }) {
             </>
           )}
         </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? <X /> : <Menu />}
-        </Button>
-      </div>
-
-      {open && (
-        <div className="border-t bg-background px-4 pb-4 pt-2 md:hidden">
-          <nav className="flex flex-col gap-1" aria-label="Mobile">
-            {links.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className={linkClass(link.href)}>
-                {link.label}
-              </Link>
-            ))}
-            {user ? (
-              <>
-                <Link href={dashboardPathFor(user.role)} onClick={() => setOpen(false)} className={linkClass("/dashboard")}>
-                  Dashboard
-                </Link>
-                <Link href={`${dashboardPathFor(user.role)}/profile`} onClick={() => setOpen(false)} className={linkClass("/profile")}>
-                  Profile Settings
-                </Link>
-                <button type="button" onClick={handleSignOut} className="rounded-md px-3 py-2 text-left text-sm font-medium hover:bg-accent">
-                  Logout
-                </button>
-              </>
-            ) : (
-              <div className="mt-2 flex gap-2">
-                <Button asChild variant="outline" className="flex-1">
-                  <Link href="/sign-in" onClick={() => setOpen(false)}>Sign In</Link>
-                </Button>
-                <Button asChild className="flex-1">
-                  <Link href="/sign-up" onClick={() => setOpen(false)}>Sign Up</Link>
-                </Button>
-              </div>
-            )}
-          </nav>
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? <X /> : <Menu />}
+          </Button>
         </div>
-      )}
+      </div>
+        {open && (
+          <div className="border-t bg-background px-4 pb-4 pt-2 md:hidden">
+            <nav className="flex flex-col gap-1" aria-label="Mobile">
+              {links.map((link) => (
+                <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className={linkClass(link.href)}>
+                  {link.label}
+                </Link>
+              ))}
+              {user ? (
+                <>
+                  <Link href={dashboardPathFor(user.role)} onClick={() => setOpen(false)} className={linkClass("/dashboard")}>
+                    Dashboard
+                  </Link>
+                  <Link href={`${dashboardPathFor(user.role)}/profile`} onClick={() => setOpen(false)} className={linkClass("/profile")}>
+                    Profile Settings
+                  </Link>
+                  <button type="button" onClick={handleSignOut} className="rounded-md px-3 py-2 text-left text-sm font-medium hover:bg-accent">
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <div className="mt-2 flex gap-2">
+                  <Button asChild variant="outline" className="flex-1">
+                    <Link href="/sign-in" onClick={() => setOpen(false)}>Sign In</Link>
+                  </Button>
+                  <Button asChild className="flex-1">
+                    <Link href="/sign-up" onClick={() => setOpen(false)}>Sign Up</Link>
+                  </Button>
+                </div>
+              )}
+            </nav>
+          </div>
+        )}
     </header>
   );
 }

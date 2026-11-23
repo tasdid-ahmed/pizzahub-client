@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiFetch } from "@/lib/api";
 import { formatDate } from "@/lib/format";
+import { OrderStatusChart } from "@/components/shared/order-status-chart";
 
 function useOverview<T>(path: string) {
   const [data, setData] = useState<T | null>(null);
@@ -38,6 +39,7 @@ function Loading() {
   );
 }
 
+
 export function CustomerOverview() {
   const { data, error } = useOverview<{
     totalOrders: number;
@@ -49,20 +51,39 @@ export function CustomerOverview() {
 
   if (error) return <p className="rounded-xl border-2 border-border bg-card p-8 text-center">{error}</p>;
   if (!data) return <Loading />;
+
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Total orders" value={data.totalOrders} icon={ShoppingBag} />
         <StatCard label="Pending" value={data.pendingOrders} icon={Clock} />
         <StatCard label="Accepted" value={data.acceptedOrders} icon={CheckCircle2} />
-        <StatCard label="Rejected" value={data.rejectedOrders} icon={XCircle} hint={`${data.cancelledOrders} cancelled`} />
+        <StatCard
+          label="Rejected"
+          value={data.rejectedOrders}
+          icon={XCircle}
+          hint={`${data.cancelledOrders} cancelled`}
+        />
       </div>
+
+      <div className="max-w-2xl">
+        <OrderStatusChart
+          counts={{
+            pending: data.pendingOrders,
+            accepted: data.acceptedOrders,
+            rejected: data.rejectedOrders,
+            cancelled: data.cancelledOrders,
+          }}
+        />
+      </div>
+
       <Button asChild>
         <Link href="/menu">Order something tasty</Link>
       </Button>
     </div>
   );
 }
+
 
 export function VendorOverview() {
   const { data, error } = useOverview<{

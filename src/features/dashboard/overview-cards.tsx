@@ -85,18 +85,22 @@ export function CustomerOverview() {
 }
 
 
+
 export function VendorOverview() {
   const { data, error } = useOverview<{
     totalMenuItems: number;
     activeMenuItems: number;
     pendingOrders: number;
     acceptedOrders: number;
+    rejectedOrders: number;
+    cancelledOrders: number;
     plan: "free" | "premium";
     subscriptionExpiresAt: string | null;
   }>("/vendor/overview");
 
   if (error) return <p className="rounded-xl border-2 border-border bg-card p-8 text-center">{error}</p>;
   if (!data) return <Loading />;
+
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -111,6 +115,19 @@ export function VendorOverview() {
           hint={data.plan === "premium" && data.subscriptionExpiresAt ? `Renews or ends ${formatDate(data.subscriptionExpiresAt)}` : "Up to 3 active items"}
         />
       </div>
+
+      <div className="max-w-2xl">
+        <OrderStatusChart
+          title="Restaurant order overview"
+          counts={{
+            pending: data.pendingOrders,
+            accepted: data.acceptedOrders,
+            rejected: data.rejectedOrders,
+            cancelled: data.cancelledOrders,
+          }}
+        />
+      </div>
+
       {data.plan === "free" && (
         <Button asChild>
           <Link href="/dashboard/vendor/subscription">Upgrade to Premium</Link>

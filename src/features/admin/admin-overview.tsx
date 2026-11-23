@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { AdminOverview as Overview } from "@/types/admin";
 import { adminApi } from "./api";
+import { DistributionChart } from "@/components/shared/distribution-chart";
 
 export function AdminOverview() {
   const [stats, setStats] = useState<Overview | null>(null);
@@ -49,6 +50,63 @@ export function AdminOverview() {
         <StatCard label="Pending menu items" value={stats.pendingMenuItems} icon={ClipboardList} hint="Waiting for review" />
         <StatCard label="Transactions" value={stats.totalTransactions} icon={Receipt} />
       </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <DistributionChart
+          title="User composition"
+          description="Distribution of registered users by role"
+          type="pie"
+          data={[
+            {
+              name: "Vendors",
+              value: stats.totalVendors,
+              color: "#0EA5E9",
+            },
+            {
+              name: "Customers",
+              value: stats.totalCustomers,
+              color: "#10B981",
+            },
+            {
+              name: "Admins",
+              value: Math.max(
+                0,
+                stats.totalUsers - stats.totalVendors - stats.totalCustomers,
+              ),
+              color: "#8B5CF6",
+            },
+          ]}
+        />
+
+        <DistributionChart
+          title="Menu item status"
+          description="Review the current status of platform menu items"
+          type="bar"
+          data={[
+            {
+              name: "Approved",
+              value: stats.itemsByStatus.approved ?? 0,
+              color: "#10B981",
+            },
+            {
+              name: "Pending",
+              value: stats.itemsByStatus.pending ?? 0,
+              color: "#F59E0B",
+            },
+            {
+              name: "Rejected",
+              value: stats.itemsByStatus.rejected ?? 0,
+              color: "#F43F5E",
+            },
+            {
+              name: "Inactive",
+              value: stats.itemsByStatus.inactive ?? 0,
+              color: "#64748B",
+            },
+          ]}
+        />
+      </div>
+
       {stats.pendingMenuItems > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-[color:var(--hard)] bg-accent p-5">
           <p className="flex items-center gap-2 font-medium">

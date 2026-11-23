@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { formatPrice } from "@/lib/constants";
 import { formatDate, formatDateTime } from "@/lib/format";
 import type { Order } from "@/types/orders";
+import { OrderTimeline } from "./order-timeline";
 
 export function OrderDetailsDialog({
   order,
@@ -28,6 +29,10 @@ export function OrderDetailsDialog({
             </DialogHeader>
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg border bg-muted">
               {order.item.image && <Image src={order.item.image} alt={order.item.name} fill sizes="480px" className="object-cover" />}
+            </div>
+            <div className="rounded-lg border bg-muted/40 p-4">
+              <p className="mb-3 text-sm font-bold">Order status</p>
+              <OrderTimeline order={order} />
             </div>
             <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-2 text-sm">
               <dt className="text-muted-foreground">Status</dt>

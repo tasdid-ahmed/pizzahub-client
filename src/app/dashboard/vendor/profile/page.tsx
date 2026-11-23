@@ -6,7 +6,7 @@ import { requireRole } from "@/lib/session";
 export const metadata: Metadata = { title: "Profile Settings" };
 
 export default async function CustomerProfilePage() {
-  await requireRole("customer");
+  await requireRole("vendor");
   return (
     <>
       <PageHeader title="Profile Settings" description="Update your name, photo and restaurant details." />

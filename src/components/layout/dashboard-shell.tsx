@@ -12,6 +12,7 @@ import { DASHBOARD_NAV, type NavItem } from "@/features/dashboard/nav";
 import { authClient } from "@/lib/auth-client";
 import type { Role } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 
 type ShellUser = { name: string; email: string; image: string | null; role: Role };
 
@@ -56,29 +57,42 @@ export function DashboardShell({ user, children }: { user: ShellUser; children: 
       </nav>
 
       <div className="space-y-3 border-t border-sidebar-border pt-4">
-        <div className="flex items-center gap-3 px-2">
-          <Avatar className="size-9">
-            {user.image && <AvatarImage src={user.image} alt={user.name} />}
-            <AvatarFallback className="text-foreground">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold">{user.name}</p>
-            <p className="text-xs capitalize text-sidebar-foreground/70">{user.role}</p>
+        <div className="flex items-center justify-between px-2">
+          <div className="flex items-center gap-3">
+            <Avatar className="size-9">
+              {user.image && <AvatarImage src={user.image} alt={user.name} />}
+              <AvatarFallback className="text-foreground">
+                {user.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">{user.name}</p>
+              <p className="text-xs capitalize text-sidebar-foreground/70">
+                {user.role}
+              </p>
+            </div>
           </div>
+
+          <ThemeToggle />
         </div>
+
         <Link
           href="/"
           className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-sidebar-accent"
           onClick={() => setOpen(false)}
         >
-          <Globe className="size-4" aria-hidden /> Back to website
+          <Globe className="size-4" aria-hidden />
+          Back to website
         </Link>
+
         <button
           type="button"
           onClick={handleSignOut}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-sidebar-accent"
         >
-          <LogOut className="size-4" aria-hidden /> Logout
+          <LogOut className="size-4" aria-hidden />
+          Logout
         </button>
       </div>
     </div>
